@@ -1,0 +1,9 @@
+
+# Data folders to ignore
+Input/
+Output/
+
+# Project Virtual Environment to exclude
+
+venv/
+*.pyc 
