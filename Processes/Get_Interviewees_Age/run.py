@@ -22,7 +22,7 @@ import math
 # inputs and global config
 INPUT_DATA='fortunoff-marc.xml'
 marc_xml_path = constants.INPUT_FOLDER_FORTUNOFF_METADATA+'fortunoff-marc.xml' # path to metadata xml
-max_records = 4390# max records to process (int|None)
+max_records = 182# max records to process (int|None)
 #complete number of records: 4390
 
 
@@ -304,7 +304,7 @@ def main():
   records = format_marc()
   records=create_csv_data(records)
  
-  write_to_csv(records,"result_2.csv")
+  write_to_csv(records,constants.INTERVIEWEES_YEAR_OF_BIRTH+"fortunoff_interviewees_year_of_birth.csv")
   
   
 

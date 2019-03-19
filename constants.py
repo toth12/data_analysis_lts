@@ -8,3 +8,4 @@ INPUT_FOLDER_FORTUNOFF_METADATA = os.getcwd()+"/Input/Fortunoff_Metadata/"
 
 WORDCOUNTS = os.getcwd()+"/Output/Wordcounts/"
 FORTUNOFF_RECORDING_YEARS = os.getcwd()+"/Output/Interview_Recording_Years/"
+INTERVIEWEES_YEAR_OF_BIRTH = os.getcwd()+"/Output/Interviewees_Year_Of_Birth/"
