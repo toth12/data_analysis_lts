@@ -1,5 +1,5 @@
 import constants
-from Utilities.text_utils import read,transform_fields_with_non_latin_characters_to_latin
+from Utilities.text_utils import read,transform_fields_with_non_latin_characters_to_latin, write_to_csv
 from Utilities.marc import get_marc_fields
 from collections import defaultdict, Counter
 from glob import glob
@@ -10,6 +10,7 @@ import sys
 import json
 import constants
 import pdb
+import math
 
 
 ##
@@ -21,76 +22,22 @@ import pdb
 # inputs and global config
 INPUT_DATA='fortunoff-marc.xml'
 marc_xml_path = constants.INPUT_FOLDER_FORTUNOFF_METADATA+'fortunoff-marc.xml' # path to metadata xml
-max_records = 174 # max records to process (int|None)
+max_records = 4390# max records to process (int|None)
 #complete number of records: 4390
 
 
 # marc fields to process
 fields = [
   {
-    'number': '245',
-    'letter': 'a',
-    'label': 'testimony_title',
-  },
-  
-  {
-    'number': '100',
-    'letter': 'a',
-    'label': 'interviewee_name',
-  },
-  {
-    'number': '520',
-    'letter': 'a',
-    'label': 'interview_summary',
-  },
-  {
-    'number': '610',
-    'letter': 'a',
-    'label': 'camp_names_1',
-    'type': list
-  },
-  {
-    'number': '690',
-    'letter': 'a',
-    'label': 'camp_names_2',
-    'type': list
-  },
-  {
-    'number': '691',
-    'letter': 'a',
-    'label': 'camp_names_3',
-    'type': list
-  },
-  {
-    'number': '691',
-    'letter': 'a',
-    'label': 'ghetto_names',
-    'type': list
-  },
-  {
     'number': '090',
     'letter': 'b',
     'label': 'testimony_id',
   },
+  
   {
-    'number': '260',
-    'letter': 'b',
-    'label': 'provenance',
-  },
-  {
-    'number': '260',
-    'letter': 'c',
-    'label': 'recording_year',
-  },
-  {
-    'number': '650',
-    'letter': '0',
-    'label': 'gender',
-  },
-  {
-    'number': '600',
+    'number': '100',
     'letter': 'd',
-    'label': 'interviewee_year_of_birth',
+    'label': 'interviewee_year_of_birth'
   }
 ]
 
@@ -198,22 +145,10 @@ def flatten_marc_json(records):
     parsed = get_marc_fields(record, fields)
     
 
-    parsed['gender'] = clean_gender(parsed['gender'])
-    parsed['collection'] = 'Fortunoff'
-    parsed['shelfmark'] = 'Fortunoff '+parsed['testimony_id']
-    parsed['recording_year'] = clean_year(parsed['recording_year'])
-    parsed['media_url'] = []
-    parsed['thumbnail_url'] = ''
-    parsed['camp_names']=parsed['camp_names_1']+parsed['camp_names_2']+parsed['camp_names_2']
-    parsed['camp_names'] = clean_camp_names(parsed['camp_names_1'])
-    parsed['provenance'] = clean_provenance(parsed['provenance'])
-    parsed['ghetto_names']=clean_ghetto_names(parsed['ghetto_names'])
+    
     parsed['interviewee_year_of_birth']=clean_interviewee_year_of_birth(parsed['interviewee_year_of_birth'])
     
-    #delete unnecessary fields
-    parsed.pop('camp_names_1',None)
-    parsed.pop('camp_names_2',None)
-    parsed.pop('camp_names_3',None)
+    
     
     # add the parsed record to the list of parsed records
     parsed_records.append(parsed)
@@ -307,13 +242,15 @@ def clean_interviewee_year_of_birth(interviewee_year_of_birth):
     {str}: a string
   '''
   interviewee_year_of_birth_cleaned=[]
-  if len(interviewee_year_of_birth[0]) > 0:
-  	for element in interviewee_year_of_birth:
-  		print (element)
-  		interviewee_year_of_birth_cleaned.append(element.split('-')[0])
-  	return interviewee_year_of_birth_cleaned
-  else:
-  	return None
+  try:
+	  if interviewee_year_of_birth!='':
+	  	
+	  	interviewee_year_of_birth_cleaned.append(interviewee_year_of_birth.split('-')[0])
+	  	return interviewee_year_of_birth_cleaned
+	  else:
+	  	return None
+  except:
+   	pdb.set_trace()
 
 
 def format_marc():
@@ -329,8 +266,31 @@ def format_marc():
   
   return marc_json_flat
 
+def create_csv_data(records):
+	csv_ready_records=[]
+	for record in records:
+		print (record)
+		if record['interviewee_year_of_birth'] is not None:
+			for element in record['interviewee_year_of_birth']:
+				if len(element) ==4:
+					csv_ready_records.append({"testimony_id":record['testimony_id'],"interviewee_year_of_birth":int(element)})
+				else:
+					csv_ready_records.append({"testimony_id":record['testimony_id'],"interviewee_year_of_birth":None})
+		else:
+			csv_ready_records.append({"testimony_id":record['testimony_id'],"interviewee_year_of_birth":None})
+	return csv_ready_records
 
-##
+
+def myround(x, base=5):
+    return base * round(x/base)
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+##	
 # Main
 ##
 
@@ -342,16 +302,10 @@ def main():
 
   # process records
   records = format_marc()
-  records=transform_fields_with_non_latin_characters_to_latin(records)
-  i=1
-  for record in records:
-  	print (i)
-  	print (record['testimony_title'])
-  	print (record['interviewee_year_of_birth'])
-  	i=i+1
-
+  records=create_csv_data(records)
+ 
+  write_to_csv(records,"result_2.csv")
   
-  pdb.set_trace()
   
 
 

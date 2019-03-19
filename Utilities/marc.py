@@ -80,7 +80,7 @@ def get_list_field(record, args):
   l = []
   number = args['number']
   letter = args['letter']
-
+  pdb.set_trace()
   # some marc fields use an integer range, e.g. subjects = 600-699
   if args['numbers']:
     for number in args['numbers']:
