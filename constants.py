@@ -7,3 +7,4 @@ INPUT_FOLDER_FORTUNOFF_METADATA = os.getcwd()+"/Input/Fortunoff_Metadata/"
 #set the pathes of for output folders
 
 WORDCOUNTS = os.getcwd()+"/Output/Wordcounts/"
+FORTUNOFF_RECORDING_YEARS = os.getcwd()+"/Output/Interview_Recording_Years/"
