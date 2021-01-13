@@ -2,6 +2,7 @@
 # Data folders to ignore
 Input/
 Output/
+Data/
 
 # Project Virtual Environment to exclude
 
