@@ -3,7 +3,7 @@ import sys, os
 #set the pathes of the data specific input folders
 INPUT_FOLDER_FORTUNOFF_FOLIA = os.getcwd()+"/Input/Fortunoff_Folia/"
 INPUT_FOLDER_FORTUNOFF_METADATA = os.getcwd()+"/Data/Input/Fortunoff_Metadata/"
-
+INPUT_FOLDER_USC_METADATA = os.getcwd()+"/Data/Input/USC_Metadata/"
 #set the pathes of for output folders
 OUTPUT_FOLDER = os.getcwd()+"/Data/Output/"
 WORDCOUNTS = os.getcwd()+"/Output/Wordcounts/"
